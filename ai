@@ -1,0 +1,125 @@
+#!/bin/bash
+
+CONFIG_FILE="$HOME/.ai.conf"
+API_ENDPOINT="https://api.openai.com/v1/chat/completions"
+
+# Function to display usage instructions
+show_usage() {
+	echo
+	echo "Usage: ai <prompt>"
+	echo
+	echo "Description:"
+	echo "  This command interprets a natural language prompt and generates"
+	echo "  the corresponding bash command(s) to perform the requested task."
+	echo
+	echo "Examples:"
+	echo "  ai list all files in the current directory"
+	echo "  ai create a new directory called 'project' and cd into it"
+	echo "  ai find all .txt files modified in the last 7 days"
+	echo
+	echo "Note:"
+	echo "  The generated command will be displayed for review before execution."
+	echo "  You will be prompted to confirm before the command is actually run."
+}
+
+# Function to prompt for API key and create config file
+setup_config() {
+	echo
+	echo "API key not found. Please enter your OpenAI API key:"
+	read -r API_KEY
+	echo "API_KEY=$API_KEY" >"$CONFIG_FILE"
+	chmod 600 "$CONFIG_FILE"
+	echo "Config file created at $CONFIG_FILE"
+
+	# Check if curl is installed, if not, install it
+	if ! command -v curl &> /dev/null; then
+		echo "curl is not installed. Installing curl..."
+		if [ "$(uname)" == "Darwin" ]; then
+			brew install curl
+		else
+			sudo apt-get update && sudo apt-get install -y curl
+		fi
+	fi
+
+	# Check if jq is installed, if not, install it
+	if ! command -v jq &> /dev/null; then
+		echo "jq is not installed. Installing jq..."
+		if [ "$(uname)" == "Darwin" ]; then
+			brew install jq
+		else
+			sudo apt-get install -y jq
+		fi
+	fi
+}
+
+# Check if config file exists, if not, set it up
+if [ ! -f "$CONFIG_FILE" ]; then
+	setup_config
+fi
+
+# Source the config file
+source "$CONFIG_FILE"
+
+# Check if a prompt was provided
+if [ $# -eq 0 ]; then
+	show_usage
+	exit 1
+fi
+
+# Combine all arguments into a single prompt
+PROMPT="$*"
+
+# Prepare the API request
+REQUEST_BODY=$(
+	cat <<EOF
+{
+    "model": "gpt-3.5-turbo",
+    "messages": [
+        {"role": "system", "content": "You are a helpful assistant that provides bash commands to accomplish tasks. Respond only with the exact bash command(s) needed, without any explanation or markdown formatting."},
+        {"role": "user", "content": "$PROMPT"}
+    ]
+}
+EOF
+)
+
+# Send request to API and handle the response
+RESPONSE=$(curl -s -w "%{http_code}" -H "Content-Type: application/json" \
+	-H "Authorization: Bearer $API_KEY" \
+	-d "$REQUEST_BODY" \
+	"$API_ENDPOINT")
+
+# Extract HTTP status code
+HTTP_STATUS=$(echo "$RESPONSE" | tail -n1)
+# Extract response body (excluding HTTP status code)
+RESPONSE_BODY=$(echo "$RESPONSE" | sed '$d')
+
+# Check if the API call was successful (HTTP 200 OK)
+if [ "$HTTP_STATUS" -ne 200 ]; then
+	echo "Error: API request failed with status code $HTTP_STATUS"
+	echo "Response: $RESPONSE_BODY"
+	exit 1
+fi
+
+# Extract the command from the response
+COMMAND=$(echo "$RESPONSE_BODY" | jq -r '.choices[0].message.content')
+
+# Check if a command was returned
+if [ -z "$COMMAND" ]; then
+	echo "Error: No command was returned by the API."
+	exit 1
+fi
+
+# Display the command
+echo
+echo "Command to execute:"
+echo "$COMMAND"
+echo
+
+# Prompt for execution
+read -p "Do you want to execute this command? (y/n): " CONFIRM
+
+if [[ $CONFIRM == [Yy]* ]]; then
+	eval "$COMMAND"
+else
+	echo "Command not executed."
+fi
