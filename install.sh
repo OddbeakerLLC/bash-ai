@@ -9,7 +9,7 @@ if [ -f "$TARGET_DIR/$SCRIPT_NAME" ]; then
     echo "$SCRIPT_NAME is already installed at $TARGET_DIR/$SCRIPT_NAME"
 else
     # Copy the script to /usr/local/sbin
-    cp ai.sh "$TARGET_DIR/$SCRIPT_NAME"
+    cp $SCRIPT_NAME "$TARGET_DIR/$SCRIPT_NAME"
     chmod +x "$TARGET_DIR/$SCRIPT_NAME"
     echo "$SCRIPT_NAME has been installed to $TARGET_DIR/$SCRIPT_NAME"
 fi
