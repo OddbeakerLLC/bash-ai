@@ -69,6 +69,9 @@ fi
 # Combine all arguments into a single prompt
 PROMPT="$*"
 
+# Escape the double quotes and backslashes for the JSON payload
+ESCAPED_PROMPT=$(echo "$PROMPT" | sed 's/\\/\\\\/g' | sed 's/"/\\"/g')
+
 # Prepare the API request
 REQUEST_BODY=$(
 	cat <<EOF
@@ -76,7 +79,7 @@ REQUEST_BODY=$(
     "model": "gpt-3.5-turbo",
     "messages": [
         {"role": "system", "content": "You are a helpful assistant that provides bash commands to accomplish tasks. Respond only with the exact bash command(s) needed, without any explanation or markdown formatting."},
-        {"role": "user", "content": "$PROMPT"}
+        {"role": "user", "content": "$ESCAPED_PROMPT"}
     ]
 }
 EOF

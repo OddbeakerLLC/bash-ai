@@ -15,8 +15,8 @@ This project provides a bash script that uses the OpenAI API to generate and exe
 
 - You need to have `git` installed on your system to clone the repository.
 - Ensure you have `sudo` privileges to install the script system-wide.
-- An OpenAI API key is required. You can get one [here](https://platform.openai.com/api-keys)
-- bash-ai requires curl and jq to run. It will try to install them if it cannot find them.
+- An OpenAI API key is required. You can get one [here](https://platform.openai.com/api-keys).
+- bash-ai requires `curl` and `jq` to run. It will try to install them if it cannot find them.
 
 ### Steps
 
@@ -37,38 +37,38 @@ This project provides a bash script that uses the OpenAI API to generate and exe
 
 ## Usage
 
-   Once installed, you can use the script by typing ai followed by your natural language prompt.
+Once installed, you can use the script by typing ai followed by your natural language prompt.
 
 ## Examples
 
-   ```bash
-   ai show me all active TCP ports
+```bash
+ai show me all active TCP ports
 
-   ai create a new directory called 'project' and cd into it
+ai create a new directory called 'project' and cd into it
 
-   ai synchronize files between ~/dev here and ~/dev on myserver.com:1234
-   ```
+ai synchronize files between ~/dev here and ~/dev on myserver.com:1234
+```
 
 ## Notes
 
-   The generated command will be displayed for review before execution.
-   You will be prompted to confirm the execution of the command.
+The generated command will be displayed for review before execution.
+You will be prompted to confirm the execution of the command.
 
 ## Uninstallation
 
-   To remove the script, simply delete it from /usr/local/sbin/:
+To remove the script, simply delete it from /usr/local/sbin/:
 
-   ```bash
-   sudo rm /usr/local/sbin/ai
-   ```
+```bash
+sudo rm /usr/local/sbin/ai
+```
 
 ## Contributing
 
-   Contributions are welcome! If you find any issues or have ideas for improvements, feel free to open an issue or submit a pull request.
+Contributions are welcome! If you find any issues or have ideas for improvements, feel free to open an issue or submit a pull request.
 
 ## License
 
-   This project is licensed under the GNU License. See the LICENSE file for details.
+This project is licensed under the GNU License. See the LICENSE file for details.
 
 ### Summary of Sections:
 
