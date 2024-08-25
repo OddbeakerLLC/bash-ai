@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Define the target directory and script name
-TARGET_DIR="/usr/local/sbin"
+TARGET_DIR="/usr/local/bin"
 SCRIPT_NAME="ai"
 
 # Check if the script is already in the target directory
