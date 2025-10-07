@@ -117,12 +117,3 @@ echo
 echo "Command to execute:"
 echo "$COMMAND"
 echo
-
-# Prompt for execution
-read -p "Do you want to execute this command? (y/n): " CONFIRM
-
-if [[ $CONFIRM == [Yy]* ]]; then
-	eval "$COMMAND"
-else
-	echo "Command not executed."
-fi
