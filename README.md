@@ -2,6 +2,8 @@
 
 This project provides a bash script that uses the OpenAI API to generate and execute bash commands based on natural language prompts. The script can be easily installed and used on any Linux or macOS system.
 
+![bash-ai demo](bash-ai.gif)
+
 ## Features
 
 - Generate bash commands from natural language prompts.
